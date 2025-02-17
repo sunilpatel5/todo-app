@@ -9,6 +9,17 @@ use Tests\TestCase;
 
 class TodoTest extends TestCase
 {
+    protected string $api_version;
+
+    /**
+     * Set up the test
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->api_version = config('app.api_version');
+    }
+
     /**
      * Test to create a to-do item.
      *
@@ -21,7 +32,7 @@ class TodoTest extends TestCase
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
-        ])->postJson('/api/v1/todos', [
+        ])->postJson("/api/{$this->api_version}/todos", [
             'title' => 'Code cleanup',
             'description' => 'Code cleanup Description',
         ]);
@@ -43,7 +54,7 @@ class TodoTest extends TestCase
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token,
-        ])->getJson("/api/v1/todos/{$todo->id}");
+        ])->getJson("/api/{$this->api_version}/todos/{$todo->id}");
 
         $response->assertStatus(403);
     }

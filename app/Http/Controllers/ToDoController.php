@@ -41,7 +41,7 @@ class ToDoController extends Controller
      */
     public function show(ToDo $todo): JsonResponse
     {
-        Gate::authorize('show', $todo);
+        Gate::authorize('view', $todo);
         return response()->json($todo, 200);
     }
 

@@ -10,6 +10,8 @@ class ToDoPolicy
 {
     /**
      * Determine whether the user can view any models.
+     * @param User $user
+     * @return bool
      */
     public function viewAny(User $user): bool
     {
@@ -18,14 +20,21 @@ class ToDoPolicy
 
     /**
      * Determine whether the user can view the model.
+     * @param User $user
+     * @param ToDo $todo
+     * @return Response
      */
-    public function view(User $user, ToDo $toDo): bool
+    public function view(User $user, ToDo $todo): Response
     {
-        return false;
+        return $user->id === $todo->user_id
+        ? Response::allow()
+        : Response::deny('You cannot read this to-do item');
     }
 
     /**
      * Determine whether the user can create models.
+     * @param User $user
+     * @return bool
      */
     public function create(User $user): bool
     {
@@ -34,6 +43,9 @@ class ToDoPolicy
 
     /**
      * Determine whether the user can update the model.
+     * @param User $user
+     * @param ToDo $todo
+     * @return Response
      */
     public function update(User $user, ToDo $todo): Response
     {
@@ -44,6 +56,9 @@ class ToDoPolicy
 
     /**
      * Determine whether the user can delete the model.
+     * @param User $user
+     * @param ToDo $todo
+     * @return Response
      */
     public function delete(User $user, ToDo $todo): Response
     {
@@ -55,6 +70,9 @@ class ToDoPolicy
 
     /**
      * Determine whether the user can restore the model.
+     * @param User $user
+     * @param ToDo $todo
+     * @return Response
      */
     public function restore(User $user, ToDo $todo): Response
     {
@@ -66,6 +84,9 @@ class ToDoPolicy
 
     /**
      * Determine whether the user can permanently delete the model.
+     * @param User $user
+     * @param ToDo $todo
+     * @return Response
      */
     public function forceDelete(User $user, ToDo $todo): Response
     {
