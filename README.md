@@ -1,66 +1,185 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+````markdown
+# Todo List API - Sunil Patel
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A RESTful API for managing todo items with user authentication and authorization, built with Laravel.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+-   🔐 **JWT-like Authentication** via Laravel Sanctum
+-   ✅ CRUD Operations for Todo Items
+-   🔒 Users Can Only Access/Modify Their Own Todos
+-   🚦 Status Tracking (`todo`, `in progress`, `completed`)
+-   🧪 Unit Tests for Core Functionality
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Prerequisites
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+-   PHP ≥8.1
+-   Composer
+-   MySQL ≥5.7
+-   Laravel CLI
 
-## Learning Laravel
+## Installation
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. **Clone Repository**
+    ```bash
+    git clone https://github.com/sunilpatel5/todo-app.git
+    cd todo-app
+    ```
+````
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+2. **Install Dependencies**
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+    ```bash
+    composer install
+    ```
 
-## Laravel Sponsors
+3. **Configure Environment**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+    ```bash
+    cp .env.example .env
+    php artisan key:generate
+    ```
 
-### Premium Partners
+    Update `.env` with your database credentials:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+    ```env
+    DB_DATABASE=your_db_name
+    DB_USERNAME=your_db_user
+    DB_PASSWORD=your_db_password
+    ```
 
-## Contributing
+4. **Database Setup**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+    ```bash
+    php artisan migrate
+    ```
 
-## Code of Conduct
+5. **Running the Server**
+    ```bash
+    php artisan serve
+    ```
+    The API will be available at `http://localhost:8000`.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## API Documentation
 
-## Security Vulnerabilities
+### Authentication Endpoints
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+#### Register User
 
-## License
+```http
+POST /api/register
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Request Body:**
+
+```json
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "password": "secret"
+}
+```
+
+#### Login
+
+```http
+POST /api/login
+```
+
+**Request Body:**
+
+```json
+{
+    "email": "john@example.com",
+    "password": "secret"
+}
+```
+
+**Response:**
+
+```json
+{
+    "token": "your-api-token"
+}
+```
+
+### Todo Endpoints (All require authentication)
+
+| Method | Endpoint             | Description          |
+| ------ | -------------------- | -------------------- |
+| GET    | `/api/v1/todos`      | Get all user's todos |
+| POST   | `/api/v1/todos`      | Create new todo      |
+| GET    | `/api/v1/todos/{id}` | Get single todo      |
+| PUT    | `/api/v1/todos/{id}` | Update todo          |
+| DELETE | `/api/v1/todos/{id}` | Delete todo          |
+
+### Todo Object Schema
+
+```json
+{
+    "id": 1,
+    "title": "Buy groceries",
+    "description": "Milk, eggs, bread",
+    "status": "todo",
+    "created_at": "2023-09-15T12:00:00.000000Z",
+    "updated_at": "2023-09-15T12:00:00.000000Z"
+}
+```
+
+### Example Request
+
+```bash
+curl -X POST \
+  -H "Authorization: Bearer your-token" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Learn Laravel","status":"in progress"}' \
+  http://localhost:8000/api/todos
+```
+
+## Testing
+
+Run tests with:
+
+```bash
+php artisan test
+```
+
+### Test Coverage
+
+-   Todo creation and validation
+-   Authorization checks (users can't access others' todos)
+
+## Database Schema
+
+### Todos Table
+
+```sql
+CREATE TABLE todos (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id BIGINT UNSIGNED NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  description TEXT NULL,
+  status VARCHAR(255) DEFAULT 'todo',
+  created_at TIMESTAMP NULL,
+  updated_at TIMESTAMP NULL,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+```
+
+## Security
+
+-   🔑 API tokens stored securely using SHA-256 hashing
+-   🔒 Password hashing with bcrypt
+-   🚫 Authorization policies for resource access
+
+## Technologies Used
+
+-   Laravel 11
+-   Laravel Sanctum for API authentication
+-   Eloquent ORM
+-   MySQL
+-   PHPUnit for testing
+
+```
+
+```
